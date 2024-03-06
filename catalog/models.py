@@ -8,7 +8,7 @@ class Category(models.Model):
     description = models.CharField(max_length=200, verbose_name='Описание')
 
     def __str__(self):
-        return self.category_name
+        return f'{self.id} {self.category_name} '
 
     class Meta:
         verbose_name = 'категория'
@@ -19,14 +19,13 @@ class Product(models.Model):
     product_name = models.CharField(max_length=100, verbose_name='Наименование')
     product_description = models.CharField(max_length=200, verbose_name='Описание')
     product_image = models.ImageField(upload_to='products/', verbose_name='Изображение', **NULLABLE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.CASCADE)
     purchase_price = models.IntegerField()
-    manufactured_at = models.DateField(verbose_name='Дата производства продукта', **NULLABLE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Наименование - {self.product_name}; Описание - {self.product_description} '
+        return f'{self.id} {self.product_name} {self.purchase_price} {self.category} '
 
     class Meta:
         verbose_name = 'продукт'
