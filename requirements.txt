@@ -5,3 +5,4 @@ typing_extensions
 tzdata
 psycopg2-binary
 pillow
+ipython
