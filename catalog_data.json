@@ -56,7 +56,7 @@
     "model": "catalog.product",
     "pk": 2,
     "fields": {
-      "product_name": "VERSACE Bright Crystal",
+      "product_name": "DOLCE&GABBANA The One for Men",
       "product_description": "кориандр, базилик, грейпфрут, имбирь, цветок апельсина, кардамон, амбра, кедр, табак",
       "product_image": "",
       "category": 3,
