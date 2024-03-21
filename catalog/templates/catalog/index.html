@@ -1,125 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>PerfumeStore</title>
-</head>
-<body>
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">PerfumeStore</h5>
-    <nav class="ms-5">
-        <a class="p-2 btn btn-outline-primary" href="/">Каталог</a>
-        <a class="p-2 btn btn-outline-primary" href="./contact/">Контакты</a>
-    </nav>
-</div>
-<div class="container">
-    <div class="row text-center">
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <img src="..\..\static\images\Versace.jpg" class="card-img-top" alt="Lanvin">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">VERSACE Bright Crystal</h4>
+{% extends 'catalog/base.html' %}
+{% load mediapath_tag %}
+{% block content %}
+    <div class="container align-items-stretch">
+        <div class="row text-center">
+            {% for object in object_list %}
+                <div class="col-3">
+                    <div class="card mb-4 box-shadow h-100 w-100 d-flex flex-column">
+                        <img src="{% mediapath object.product_image %}" class="card-img-top"
+                             alt="{{ object.product_name }}">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">{{ object.product_name }}</h4>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h1 class="card-title pricing-card-title">{{ object.purchase_price }}</h1>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">{{ object.product_description }}</li>
+                                <br>
+                            </ul>
+                            <a type="button" class="btn btn-lg btn-block btn-outline-primary mt-auto"
+                               href="{% url 'catalog:product' object.pk %}">Купить
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">5 160 ₽</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Туалетная вода</li><br>
-                        <li>- Гранат, Юдзу, Магнолия, Пион, Лотос, Амбра, Мускус, Махагони</li><br>
-                        <li>- Пол - Женский</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <img src="..\..\static\images\Dolce.jpg" class="card-img-top" alt="Lanvin">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">DOLCE&GABBANA The One for Men</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">6 675 ₽</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Туалетная вода</li>
-                        <li>- кориандр, базилик, грейпфрут,
-                            имбирь, цветок апельсина, кардамон, амбра, кедр, табак</li>
-                        <li>- Пол - Мужской</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <img src="..\..\static\images\Jimmy.jpg" class="card-img-top" alt="Lanvin">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">JIMMY CHOO Man Ice</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">3 606 ₽</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Туалетная вода</li><br>
-                        <li>- мандарин, бергамот, цитрон, ветивер, пачули, кедр, яблоко, мускус, мох, амброксан</li>
-                        <li>- Пол - Мужской</li>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <img src="..\..\static\images\Lanvin.jpg" class="card-img-top" alt="Lanvin">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">LANVIN Eclat D'Arpege</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">2 424 ₽ </h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>- Парфюмерная вода</li><br>
-                        <li>- пион, сирень, зеленый чай, фрезия</li><br>
-                        <li>- Пол - Женский</li><br>
-                    </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-     <footer class="pt-4 my-md-5 pt-md-5 border-top">
-        <div class="row">
-            <div class="col-12 col-md">
-                PerfumeStore
-                <small class="d-block mb-3 text-muted">&copy; 2024</small>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Категории</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Женская парфюмерия</a></li>
-                    <li><a class="text-muted" href="#">Мужская парфюмерия</a></li>
-                    <li><a class="text-muted" href="#">Парфюм унисекс</a></li>
-                    <li><a class="text-muted" href="#">Нишевая парфюмерия</a></li>
-                    <li><a class="text-muted" href="#">Наборы парфюмерии</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Дополнительно</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Как подобрать свой аромат</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>О нас</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="/contacts/">Контакты</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}

@@ -30,3 +30,5 @@ tzdata==2024.1
 wcwidth==0.2.13
 Werkzeug==3.0.1
 zipp==3.17.0
+psycopg2==2.9.9
+
