@@ -1,0 +1,26 @@
+{% extends 'catalog/base.html' %}
+{% load mediapath_tag %}
+
+{% block content %}
+    <div class="container">
+        <div class="row text-center">
+            <div>
+                <div class="card mb-3" style="max-width: 1200px;">
+                    <div class="row g-0">
+                        <div class="col-md-4 d-flex justify-content-center">
+                            <img src="{% mediapath object.blog_preview %}" class="img-fluid rounded-start"
+                                 alt="{{ object.post_name }}">
+                        </div>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <div class="card-body d-flex flex-column">
+                                <h1 class="card-title text-danger">{{ object.post_name }}</h1>
+                                <p class="card-text fw-lighter fs-6 fw-bolder text-info-emphasis">{{ object.created_at }}</p>
+                                <p class="card-text fst-italic fw-lighter fs-3">{{ object.blog_content }}</p>
+                                <p class="card-text fw-bolder fs-2">{{ object.count_of_views }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
