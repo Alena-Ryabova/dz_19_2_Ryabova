@@ -38,3 +38,4 @@ class ContactTemplateView(TemplateView):
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product.html'
+
