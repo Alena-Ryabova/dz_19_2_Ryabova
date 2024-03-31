@@ -1,6 +1,9 @@
 {% extends 'catalog/base.html' %}
 {% load mediapath_tag %}
 {% block content %}
+    <div class="col-12 mb-5">
+    <a class="btn btn-outline-primary" href="{% url 'catalog:create_product' %}"> Добавить продукт</a>
+    </div>
     <div class="container align-items-stretch">
         <div class="row text-center">
             {% for object in object_list %}
@@ -21,6 +24,14 @@
                             <a type="button" class="btn btn-lg btn-block btn-outline-primary mt-auto"
                                href="{% url 'catalog:product' object.pk %}">Купить
                             </a>
+                        </div>
+                        <div class="d-flex justify-content-center py-3">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a href="{% url 'catalog:update_product' object.pk %}" class="nav-link">Edit</a>
+                                </li>
+                                <li class="nav-item"><a href="{% url 'materials:delete' object.pk %}" class="nav-link">Delete</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
