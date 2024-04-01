@@ -2,7 +2,7 @@
 {% load mediapath_tag %}
 {% block content %}
     <div class="col-12 mb-5">
-    <a class="btn btn-outline-primary" href="{% url 'catalog:create_product' %}"> Добавить продукт</a>
+        <a class="btn btn-outline-primary" href="{% url 'catalog:create_product' %}"> Добавить продукт</a>
     </div>
     <div class="container align-items-stretch">
         <div class="row text-center">
@@ -21,15 +21,34 @@
                                     {{ object.product_description | slice:":100"|truncatechars:100 }}</li>
                                 <br>
                             </ul>
+                            {% if object.versions.all %}
+                                {% for version in object.versions.all %}
+                                    <ul class="list-group list-group-flush">
+                                        {% if version.active %}
+                                            <li class="list-group-item"> Название
+                                                версии: {{ version.version_name }}</li>
+                                            <li class="list-group-item"> Номер версии: {{ version.version_num }}</li>
+                                        {% endif %}
+                                    </ul>
+                                {% endfor %}
+                            {% else %}
+                                <li> Нет активной версии</li>
+                            {% endif %}
+
                             <a type="button" class="btn btn-lg btn-block btn-outline-primary mt-auto"
                                href="{% url 'catalog:product' object.pk %}">Купить
                             </a>
                         </div>
                         <div class="d-flex justify-content-center py-3">
                             <ul class="nav nav-pills">
-                                <li class="nav-item"><a href="{% url 'catalog:update_product' object.pk %}" class="nav-link">Edit</a>
+                                <li class="nav-item"><a href="{% url 'catalog:update_product' object.pk %}"
+                                                        class="nav-link">Добавить версию</a>
                                 </li>
-                                <li class="nav-item"><a href="{% url 'materials:delete' object.pk %}" class="nav-link">Delete</a>
+                                <li class="nav-item"><a href="{% url 'catalog:update_product' object.pk %}"
+                                                        class="nav-link">Изменить</a>
+                                </li>
+                                <li class="nav-item"><a href="{% url 'catalog:delete_product' object.pk %}"
+                                                        class="nav-link">Удалить</a>
                                 </li>
                             </ul>
                         </div>
