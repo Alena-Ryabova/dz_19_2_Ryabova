@@ -1,5 +1,4 @@
 from django.forms import inlineformset_factory
-from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, TemplateView, DetailView, UpdateView, CreateView, DeleteView
 
@@ -7,36 +6,27 @@ from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, Version
 
 
-# def index(request):
-#     product_all = Product.objects.all()
-#     context = {
-#         'object_list': product_all
-#     }
-#     return render(request, 'catalog/index.html', context)
-
-class IndexListView(ListView):
+class ProductListView(ListView):
     model = Product
-    template_name = 'catalog/index.html'
+    template_name = 'catalog/product_list.html'
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        products = Product.objects.all()
 
-# def contact(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         phone = request.POST.get('phone')
-#         message = request.POST.get('message')
-#         print(f'Имя - {name}; Телефон - {phone}; Сообщение - {message};')
-#     return render(request, 'catalog/contact.html')
+        for product in products:
+            versions = Version.objects.filter(product=product)
+            active_versions = versions.filter(version_indicator=True)
 
-class ContactTemplateView(TemplateView):
-    template_name = 'catalog/contact.html'
+            if active_versions:
 
+                product.active_version = active_versions.last().version_name
+            else:
+                product.active_version = 'Нет активной версии'
 
-# def product(request, pk):
-#     product_item = Product.objects.get(pk=pk)
-#     context = {
-#         'object': product_item
-#     }
-#     return render(request, 'catalog/product.html', context)
+        context_data['object_list'] = products
+        return context_data
+
 
 class ProductDetailView(DetailView):
     model = Product
@@ -46,7 +36,39 @@ class ProductDetailView(DetailView):
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
-    success_url = reverse_lazy('catalog:index')
+    success_url = reverse_lazy('catalog:product_list')
+
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        products = Product.objects.all()
+
+        for product in products:
+            versions = Version.objects.filter(product=product)
+            active_versions = versions.filter(version_indicator=True)
+
+            if active_versions:
+
+                product.active_version = active_versions.last().version_name
+            else:
+                product.active_version = 'Нет активной версии'
+
+        context_data['object_list'] = products
+        return context_data
+
+    def form_valid(self, form):
+        context_data = self.get_context_data()
+        formset = context_data['formset']
+        self.object = form.save()
+
+        if formset.is_valid():
+            formset.instance = self.object
+            for form in formset.forms:
+                if form.instance:
+                    form.instance.version_indicator = True
+            formset.save()
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class ProductUpdateView(UpdateView):
@@ -74,13 +96,19 @@ class ProductUpdateView(UpdateView):
 
         if formset.is_valid():
             formset.instance = self.object
+            for form in formset.forms:
+                if form.instance:
+                    form.instance.version_indicator = True
             formset.save()
-            print("Debug: Formset is valid")
+            return super().form_valid(form)
         else:
-            print("Debug: Formset is not valid:", formset.errors)
-        return super().form_valid(form)
+            return self.form_invalid(form)
 
 
 class ProductDeleteView(DeleteView):
     model = Product
-    success_url = reverse_lazy('catalog:index')
+    success_url = reverse_lazy('catalog:product_list')
+
+
+class ContactTemplateView(TemplateView):
+    template_name = 'catalog/contact.html'

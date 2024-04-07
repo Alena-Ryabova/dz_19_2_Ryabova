@@ -23,6 +23,7 @@ class Product(models.Model):
     purchase_price = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField(default=False, verbose_name='Опубликовано')
 
     def __str__(self):
         return f'{self.id} {self.product_name} {self.purchase_price} {self.category} '
