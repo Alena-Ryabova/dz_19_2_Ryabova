@@ -10,23 +10,6 @@ class ProductListView(ListView):
     model = Product
     template_name = 'catalog/product_list.html'
 
-    def get_context_data(self, *args, **kwargs):
-        context_data = super().get_context_data(*args, **kwargs)
-        products = Product.objects.all()
-
-        for product in products:
-            versions = Version.objects.filter(product=product)
-            active_versions = versions.filter(version_indicator=True)
-
-            if active_versions:
-
-                product.active_version = active_versions.last().version_name
-            else:
-                product.active_version = 'Нет активной версии'
-
-        context_data['object_list'] = products
-        return context_data
-
 
 class ProductDetailView(DetailView):
     model = Product
@@ -37,23 +20,6 @@ class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:product_list')
-
-    def get_context_data(self, *args, **kwargs):
-        context_data = super().get_context_data(*args, **kwargs)
-        products = Product.objects.all()
-
-        for product in products:
-            versions = Version.objects.filter(product=product)
-            active_versions = versions.filter(version_indicator=True)
-
-            if active_versions:
-
-                product.active_version = active_versions.last().version_name
-            else:
-                product.active_version = 'Нет активной версии'
-
-        context_data['object_list'] = products
-        return context_data
 
     def form_valid(self, form):
         context_data = self.get_context_data()
