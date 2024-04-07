@@ -21,15 +21,19 @@
                                     {{ object.product_description | slice:":100"|truncatechars:100 }}</li>
                                 <br>
                             </ul>
+
                             {% if object.versions.all %}
                                 {% for version in object.versions.all %}
-                                    <ul class="list-group list-group-flush">
-                                        {% if version.active %}
+                                    {% if version.version_indicator %}
+                                        <ul class="list-group list-group-flush">
+
                                             <li class="list-group-item"> Название
                                                 версии: {{ version.version_name }}</li>
-                                            <li class="list-group-item"> Номер версии: {{ version.version_num }}</li>
-                                        {% endif %}
-                                    </ul>
+                                            <li class="list-group-item"> Номер
+                                                версии: {{ version.version_num }}</li>
+
+                                        </ul>
+                                    {% endif %}
                                 {% endfor %}
                             {% else %}
                                 <li> Нет активной версии</li>
