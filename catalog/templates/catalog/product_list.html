@@ -20,6 +20,8 @@
                                 <li class="list-group-item">
                                     {{ object.product_description | slice:":100"|truncatechars:100 }}</li>
                                 <br>
+                                 <li class="badge bg-secondary">Владелец:
+                                    {{ object.owner|default:"Нет владельца" }}</li>
                             </ul>
 
                             {% if object.versions.all %}
