@@ -22,19 +22,11 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('catalog:product_list')
 
     def form_valid(self, form):
-        context_data = self.get_context_data()
-        formset = context_data['formset']
         self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
 
-        if formset.is_valid():
-            formset.instance = self.object
-            for form in formset.forms:
-                if form.instance:
-                    form.instance.version_indicator = True
-            formset.save()
-            return super().form_valid(form)
-        else:
-            return self.form_invalid(form)
+        return super().form_valid(form)
 
 
 class ProductUpdateView(UpdateView):
@@ -69,6 +61,8 @@ class ProductUpdateView(UpdateView):
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
+
+
 
 
 class ProductDeleteView(DeleteView):
