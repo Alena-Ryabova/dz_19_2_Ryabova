@@ -63,8 +63,6 @@ class ProductUpdateView(UpdateView):
             return self.form_invalid(form)
 
 
-
-
 class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:product_list')

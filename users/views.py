@@ -14,6 +14,10 @@ from users.models import User
 
 class LoginView(BaseLoginView):
     template_name = 'users/login.html'
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:product_list')
 
 
 class LogoutView(BaseLogoutView):
@@ -27,14 +31,36 @@ class RegisterView(CreateView):
     template_name = 'users/register.html'
 
     def form_valid(self, form):
-        new_user = form.save()
+        user = form.save()
+        user.is_active = False
+        verification_code = ''.join([str(random.randint(0, 9)) for _ in range(12)])
+        user.verification_code = verification_code
+
+        user.save()
+        current_site = self.request.get_host()
+        verification_link = f'http://{current_site}/users/confirm/{verification_code}/'
+        message = f'Поздравляем с регистрацией! \nДля верификации перейдите по ссылке \n{verification_link}'
         send_mail(
-            subject='Поздравляем с регистрацией',
-            message='Вы зарегистрировались на нашей платформе. Добро пожаловать!',
+            subject='Регистрация',
+            message=message,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[new_user.email]
+            recipient_list=[user.email],
+            fail_silently=False
         )
+        print(message)
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:product_list')
+
+
+def verification_view(request, token):
+    user = User.objects.filter(verification_code=token).first()
+    if user:
+        user.is_active = True
+        user.save()
+
+    return redirect(reverse('users:login'))
 
 
 class ProfileView(UpdateView):
@@ -57,4 +83,4 @@ def generate_new_password(request):
     request.user.set_password(new_password)
     request.user.save()
 
-    return redirect(reverse('catalog:product_list'))
+    return redirect(reverse('users:login'))
