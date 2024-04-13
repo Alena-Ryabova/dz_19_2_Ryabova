@@ -1,14 +1,16 @@
 import random
+import secrets
+import string
 
 from django.conf import settings
-from django.contrib.auth.views import LoginView as BaseLoginView
+from django.contrib.auth.views import LoginView as BaseLoginView, PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
 
-from users.forms import UserRegisterForm, UserProfileForm
+from users.forms import UserRegisterForm, UserProfileForm, ChangeUserPasswordForm
 from users.models import User
 
 
@@ -84,3 +86,34 @@ def generate_new_password(request):
     request.user.save()
 
     return redirect(reverse('users:login'))
+
+
+class ResetUserPasswordView(PasswordResetView):
+    form_class = ChangeUserPasswordForm
+    success_url = reverse_lazy('users:login')
+
+    def form_valid(self, form):
+        if self.request.method == 'POST':
+            email = self.request.POST['email']
+            try:
+                user = User.objects.get(email=email)
+                alphabet = string.ascii_letters + string.digits
+                password = "".join(secrets.choice(alphabet) for i in range(10))
+                user.set_password(password)
+                user.save()
+                message = f"Ваш новый пароль:\n{password}"
+                send_mail(
+                    "Смена пароля",
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                )
+            except User.DoesNotExist:
+                return render(self.request, 'users/password_reset_form.html',
+                              {'error_message': 'Пользователь с таким email не найден'})
+        return super().form_valid(form)
+
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    pass
