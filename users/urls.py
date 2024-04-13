@@ -1,11 +1,12 @@
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
-from django.urls import path, reverse_lazy
+from django.urls import path, reverse_lazy, include
 
+from users import apps
 from users.apps import UsersConfig
 from users.views import LoginView, LogoutView, RegisterView, ProfileView, generate_new_password, verification_view, \
     ResetUserPasswordView
 
-app_name = UsersConfig.name
+app_name = apps.UsersConfig.name
 
 urlpatterns = [
     path('confirm/<str:token>/', verification_view, name='verification'),
