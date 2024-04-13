@@ -3,6 +3,7 @@ import secrets
 import string
 
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as BaseLoginView, PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
@@ -23,7 +24,7 @@ class LoginView(BaseLoginView):
 
 
 class LogoutView(BaseLogoutView):
-    pass
+    success_url = reverse_lazy('catalog:product_list')
 
 
 class RegisterView(CreateView):
@@ -65,10 +66,12 @@ def verification_view(request, token):
     return redirect(reverse('users:login'))
 
 
-class ProfileView(UpdateView):
+class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('users:profile')
+    login_url = reverse_lazy('users:login')
+    redirect_field_name = "redirect_to"
 
     def get_object(self, queryset=None):
         return self.request.user

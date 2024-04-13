@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.urls import reverse_lazy
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -141,3 +143,4 @@ EMAIL_HOST_USER = 'alena1987.12@mail.ru'
 EMAIL_HOST_PASSWORD = 'VmR03KzU3YiqHVkHhLfJ'
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
+LOGIN_URL = reverse_lazy('users:login')
