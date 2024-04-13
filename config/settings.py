@@ -135,9 +135,9 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'fuckup@oscarbot.ru'
-EMAIL_HOST_PASSWORD = 'AsTSNVv7pun9'
+EMAIL_HOST_USER = 'alena1987.12@mail.ru'
+EMAIL_HOST_PASSWORD = 'VmR03KzU3YiqHVkHhLfJ'
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
