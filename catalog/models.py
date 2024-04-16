@@ -18,7 +18,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100, verbose_name='Наименование')
-    product_description = models.CharField(max_length=200, verbose_name='Описание')
+    product_description = models.CharField(max_length=200, verbose_name='Описание', **NULLABLE)
     product_image = models.ImageField(upload_to='products/', verbose_name='Изображение', **NULLABLE)
     category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.CASCADE)
     purchase_price = models.IntegerField()
@@ -35,6 +35,21 @@ class Product(models.Model):
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
         ordering = ('product_name',)
+
+        permissions = [
+            (
+                'change_description',
+                'Может менять описание',
+            ),
+            (
+                'change_category',
+                'Может менять категорию',
+            ),
+            (
+                'set_published',
+                'Может отменять публикацию',
+            )
+        ]
 
 
 class Version(models.Model):

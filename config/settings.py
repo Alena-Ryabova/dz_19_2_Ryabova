@@ -144,3 +144,5 @@ EMAIL_HOST_PASSWORD = 'VmR03KzU3YiqHVkHhLfJ'
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 LOGIN_URL = reverse_lazy('users:login')
+
+
