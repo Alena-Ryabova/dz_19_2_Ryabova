@@ -19,8 +19,21 @@
                     <button type="submit" class="btn btn-lg btn-block btn-outline-primary mt-auto">Сохранить</button>
 
                 </div>
-                <div class="card-footer"></div>
-            </div>
+                {% if product.owner == request.user or request.user.is_superuser %}
+                    <div class="col-md-6">
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-body">
+                                {{ formset.management_form }}
+                                {% for form in formset.forms %}
+                                    {{ form.as_p }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                {% endif %}
+            <div class="card-footer"></div>
+        </div>
         </div>
         <div class="col-6">
             <div class="card">
