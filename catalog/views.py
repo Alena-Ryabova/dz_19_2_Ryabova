@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, TemplateView, DetailView, UpdateView, CreateView, DeleteView
 
@@ -24,12 +24,12 @@ class ProductListView(LoginRequiredMixin, ListView):
 class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product.html'
+    permission_required = 'catalog.view_product'
 
 
-class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
-    permission_required = 'catalog.add_product'
     success_url = reverse_lazy('catalog:product_list')
 
     def form_valid(self, form):
@@ -40,7 +40,7 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     permission_required = 'catalog.change_product'
@@ -48,7 +48,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         if (
-                self.object.owner == self.request.user
+                self.object.owner != self.request.user
                 or self.request.user.is_superuser is True
                 or self.request.user.groups.filter(name="moderators").exists() is True
         ):
@@ -87,13 +87,22 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return self.form_invalid(form)
 
 
-class ProductModeratorUpdateView(LoginRequiredMixin, UpdateView):
+class ProductModeratorUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductModeratorForm
     template_name = 'catalog/product_form.html'
+    reverse_lazy = 'catalog/product_form.html'
 
-    def get_success_url(self):
-        return reverse('catalog:product', args=[self.kwargs.get('pk')])
+    def test_func(self):
+        # Проверяем, является ли текущий пользователь модератором
+        return self.request.user.groups.filter(name="moderators").exists()
+
+    def handle_no_permission(self):
+        # Возвращаем статус код 403 Forbidden, если у пользователя нет доступа
+        return HttpResponseForbidden()
+
+    # def get_success_url(self):
+    #     return reverse('catalog:product', args=[self.kwargs.get('pk')])
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

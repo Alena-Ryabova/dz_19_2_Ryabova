@@ -2,9 +2,7 @@
 {% load mediapath_tag %}
 {% block content %}
     <div class="col-12 mb-5">
-        {% if perms.catalog.add_product %}
-            <a class="btn btn-outline-primary" href="{% url 'catalog:create_product' %}"> Добавить продукт</a>
-        {% endif %}
+        <a class="btn btn-outline-primary" href="{% url 'catalog:create_product' %}"> Добавить продукт</a>
     </div>
     <div class="container align-items-stretch">
         <div class="row text-center">
