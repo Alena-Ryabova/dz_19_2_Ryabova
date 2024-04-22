@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
-from django.http import HttpResponseForbidden
+from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, TemplateView, DetailView, UpdateView, CreateView, DeleteView
 
@@ -14,11 +14,7 @@ class ProductListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        current_user = self.request.user
-        if current_user.is_superuser:
-            return queryset
-        else:
-            return queryset.filter(owner=current_user)
+        return queryset
 
 
 class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
@@ -46,12 +42,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
-        if (
-                self.object.owner == self.request.user
-                or self.request.user.is_superuser is True
-        ):
-            return self.object
-        return HttpResponseForbidden()
+        return self.object
 
     def get_success_url(self):
         return reverse('catalog:product', args=[self.kwargs.get('pk')])
@@ -86,8 +77,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_class(self):
         user = self.request.user
-        if user.is_superuser or self.object.owner == user:
+        if self.object.owner == user or user.is_superuser is True:
+            return ProductForm
+        elif user.groups.filter(name='moderators').exists():
             return ProductModeratorForm
+        else:
+            raise Http404("Доступ запрещен")
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

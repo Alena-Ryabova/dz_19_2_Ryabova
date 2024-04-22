@@ -48,18 +48,11 @@
                                                         class="nav-link">Добавить версию</a>
                                 </li>
 
-                                {% if perms.catalog.change_category %}
-                                    <li class="nav-item">
-                                        <a href="{% url 'catalog:update_product' object.pk %}"
-                                           class="nav-link">Изменить</a>
-                                    </li>
-                                {% else %}
-                                    <li class="nav-item">
-                                        <a href="{% url 'catalog:update_product' object.pk %}"
-                                           class="nav-link">Изменить</a>
-                                    </li>
-                                {% endif %}
-                                {% if perms.catalog.delete_product %}
+                                <li class="nav-item">
+                                    <a href="{% url 'catalog:update_product' object.pk %}"
+                                       class="nav-link">Изменить</a>
+                                </li>
+                                {% if user.is_superuser or object.owner == user %}
 
                                     <li class="nav-item"><a href="{% url 'catalog:delete_product' object.pk %}"
                                                             class="nav-link">Удалить</a>
