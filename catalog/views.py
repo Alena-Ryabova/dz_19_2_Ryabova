@@ -6,6 +6,7 @@ from django.views.generic import ListView, TemplateView, DetailView, UpdateView,
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, Version
+from catalog.services import get_product_from_cache
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -13,14 +14,14 @@ class ProductListView(LoginRequiredMixin, ListView):
     template_name = 'catalog/product_list.html'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
+        # queryset = super().get_queryset()
+        return get_product_from_cache()
 
 
-class ProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product.html'
-    permission_required = 'catalog.view_product'
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
